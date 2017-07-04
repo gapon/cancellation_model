@@ -1,0 +1,8 @@
+backup/
+predict/
+test/
+train/
+.ipynb_checkpoints/
+
+*.xlsx
+*.csv
