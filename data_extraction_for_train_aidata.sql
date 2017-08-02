@@ -283,6 +283,15 @@ with constants as (
 			and app_id = \'qlean_web_app\'
 			and user_id is not null
 			and json_extract_path_text(contexts,\'tracking_id\') is not null') t (tracking_id varchar(64), user_id int)
+), aidata_segments as (
+	select * from dblink('dbname=snowplow', E'
+		select distinct on (tracking_id)
+			tracking_id,
+			segments
+		from uploads.aidata_segments
+		order by tracking_id, date desc') t (tracking_id varchar(64), segments text)
+), aidata_segments as (
+
 )
 
 
@@ -315,4 +324,5 @@ from orders_general_info g
 	left join orders_recency_info r on (g.order_id = r.order_id)
 	left join order_shifts s on (g.order_id = s.order_id)
 	left join dow_cleanings c on (g.order_id = c.order_id and g.dow = c.dow)
-	left join trackings t on (c.user_id = t.user_id);
+	left join trackings t on (c.user_id = t.user_id)
+	left join aidata_segments ai on (t.tracking_id = ai.tracking_id);
