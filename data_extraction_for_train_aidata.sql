@@ -72,11 +72,10 @@ with ivr_calls as (
 select * from cancel_classification_tmp;
 
 
-
 with constants as (
 	select
 		'2017-07-07'::date as start_date,
-		'2017-07-18'::date as end_date 
+		'2017-08-08'::date as end_date 
 		--'2017-06-20'::date as start_date, -- VALIDATION
 		--'2017-07-04'::date as end_date -- VALIDATION
 ), orders_recency_info as (
@@ -290,10 +289,7 @@ with constants as (
 			segments
 		from uploads.aidata_segments
 		order by tracking_id, date desc') t (tracking_id varchar(64), segments text)
-), aidata_segments as (
-
 )
-
 
 select 
 	g.*,
@@ -317,8 +313,8 @@ select
 	dow_canceled,
 	case when (dow_canceled + dow_paid) != 0 then dow_paid/(dow_canceled + dow_paid)::float end as dow_paid_share,
 	case when r.paid_all != 0 then dow_paid/r.paid_all::float end as dow_all_paid_share,
-	
-	t.tracking_id
+	--t.tracking_id,
+	ai.segments
 	
 from orders_general_info g
 	left join orders_recency_info r on (g.order_id = r.order_id)
